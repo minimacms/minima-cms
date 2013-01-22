@@ -24,7 +24,7 @@
 <p>In PHPMyAdmin, import mysql-data.sql to your database, so it is readable / writable to Minima. </p>
 <h2>3. U should mk cmmnts wrk.</h2>
 <p>Disqus is integrated to Minima now. In <i>_class/comm.php</i> edit your shortname so Minima can connect to Disqus.</p>
-<h2>4. Make it personal. [optional] </h2>
+<h2>4. Make it personal. </h2>
 <p>Change the header, or the footer via configuration files, or install a theme. Change the logo. Find more about all this on our wiki.</p>
 <h2>5. All done!</h2>
 <p>Expecting more? Sorry.</p>

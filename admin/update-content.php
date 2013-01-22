@@ -8,25 +8,20 @@ include '../_class/db-conf.php';
 <meta http-equiv="Content-Type" content="text/html; charset=UFT-8" />
 <title>Modern - CMS for modern stuff</title>
 <link rel="stylesheet" href="../style.css" type="text/css">
-<script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-
-<script type="text/javascript">
-tinyMCE.init({
-        theme : "advanced",
-        plugins : "fullpage",
-        mode : "textareas"
-});
-</script>
+<?php
+include 'adminplugins.php';
+?>
 </head>
 
 <body>
 
 <div id="page-wrap">
-<?php include 'nav.php' ; ?>
 
 <h2> Update content </h2>
 
 <?=$obj->update_content_form($_GET['id'])?>
-
+<?php
+include 'adminplugins.php';
+?>
 </body>
 <html>

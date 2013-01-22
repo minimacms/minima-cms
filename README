@@ -1,5 +1,24 @@
+This is a stable version of Minima. 
+=====
+Hi there.
+----------
+
 A simple opensource CMS solution written in PHP.
 
 When we look on other CMS solutions, like Joomla, we see thousands and thousands lines of code and a lot of functions that you actually don't use at all. We want to change that and make a simple CMS.
 
 Enjoy. :)
+
+Reporting bugs
+====
+Use our bug tracker over at http://bugs.plsr.tk
+
+
+Wiki
+=====
+Our wiki is over at our bug tracker.
+
+Installation
+=====
+Import install/mysql-data.sql into a MySQL database
+Configure _class/db-conf.php so Minima could connect to the database

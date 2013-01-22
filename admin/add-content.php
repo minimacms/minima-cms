@@ -9,17 +9,8 @@ include '../_class/db-conf.php';
 <meta http-equiv="Content-Type" content="text/html; charset=UFT-8" />
 <title>/user</title>
 <link rel="stylesheet" href="../style.css" type="text/css">
-<script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-
-<script type="text/javascript">
-tinyMCE.init({
-        theme : "advanced",
-        plugins : "fullpage",
-        mode : "textareas"
-});
 </script>
 <link rel="stylesheet" type="text/css" href="../demo.css" media="screen" />
-
 </head>
 <body>
 
@@ -32,10 +23,6 @@ tinyMCE.init({
     <div class="container">
     
 
-come on!
-
-
-<p><i>write</i> <b>anything</b></p>
 		</div>
 
  
@@ -59,25 +46,19 @@ come on!
 	<div id="page-wrap">
 	
 <label for="body">Body:</label>
-<textarea name="body" id="body" rows="15" cols="48"> </textarea>
+<textarea name="body" id="editor1" rows="15" cols="48"> </textarea>
+<?php
+include 'adminplugins.php';
+?>
 	</div>
 
-<div id="page-wrap">
-<label for="email">Email [not required, won't be shown]</label>
-<input type="text" name="email" id="email" />
-</div>
-
-<div id="page-wrap">
-<label for="delcode">Custom ID no. [not required, won't be shown]</label>
-<input type="text" name="delcode" id="delcode" />
-</div>
 
 <div id="page-wrap">
 <label for="author">Author:</label>
 <input type="text" name="author" id="author" />
 </div>
 <div id="page-wrap">
-<input type="submit" name="sumbit" value="Objavi" />
+<input type="submit" name="sumbit" value="Publish" />
 
 </form>
 </div>
@@ -92,7 +73,7 @@ come on!
 	
    <div id="footer">
 <div id="footer-content">
-<p>This is Pulsir.</p>
+
 </div>
 </div>
 </body>
