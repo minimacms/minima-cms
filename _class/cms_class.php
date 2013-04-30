@@ -8,8 +8,8 @@ class modernCMS {
 	var $db;
 
 	function connect() {
-		$con = mysql_connect($this->host, $this->username, $this->password) or die(mysql_error());
-		mysql_select_db($this->db, $con) or die(mysql_error());
+		$con = mysql_connect($this->host, $this->username, $this->password) or die('<h1>Oops.</h1>Something bad has happened.<br><a href="install/index.php">Run the installer?</a>');
+		mysql_select_db($this->db, $con) or die('<h1>Oops.</h1>Something bad has happened.<br><a href="install/index.php">Run the installer?</a>');
 	}
 
 	function get_content($id = '') {
@@ -43,13 +43,33 @@ $return = '<p><a href="index.php">home</a></p>';
 	
 }
 
+function get_sitename($id = '') {
+// gets the sitename
+
+			$sql = "SELECT * FROM settings WHERE name = 'sitename'";
+		
+		$res = mysql_query($sql) or die(mysql_error());
+
+		if(mysql_num_rows($res) !=0):
+		while($row = mysql_fetch_assoc($res)) {
+                        			echo $row['value'];
+                      
+                       
+		}
+		else:
+			echo "(sitename not set?!)";
+		endif;
+
+	
+}
+
 	function read_content($id = '') {
 //
 		if($id != ''):
 			$id = mysql_real_escape_string($id);
 			$sql = "SELECT * FROM cms_content WHERE id = '$id'";
 
-$return = '<p><a href="index.php">home</a></p>';
+$return = '';
 
 		else:
 			$sql = "SELECT * FROM cms_content ORDER BY id DESC";
@@ -62,12 +82,50 @@ $return = '<p><a href="index.php">home</a></p>';
 		if(mysql_num_rows($res) !=0):
 		while($row = mysql_fetch_assoc($res)) {
                         			echo '<h1 class="title"> <a href="?id=' . $row['id'] , '">'  . $row['title'] .  '</a></h1>';
-                        echo '<p class="meta"><span class="posted">Objavio/la: ' .$row['author'] . '</span></p>';
+                        echo '<p class="meta"><span class="posted">Posted by: ' .$row['author'] . '</span></p>';
                         echo '<div style="clear: both;">&nbsp;</div>';
 echo '<p>' . $row['body'] , '</p> ';
-			                        echo '<p class="links"><a href="?id=' . $row['id'] , '">Permalink <a></p>';
-include 'comm.php';
-                       
+			                        echo '<p class="links"><a href="?id=' . $row['id'] , '">Permalink </a></p></div><hr><h5>Comments</h5>';
+			                        
+			                        echo '</div></div></div><div class="row"><div class="four colums"><h5>Add your comment.</h5><form method="post" action="index.php">
+<input type="hidden" name="comm" value="true" />
+<input type="hidden" name="postid" value="' .$row['id'], '">
+
+<label for="commauth">Your name?</label>
+<input type="text" name="commauth" id="commauth" />
+	
+	<label for="commemail">And your email? (will not be published)</label>
+<input type="text" name="commemail" id="commemail" />
+
+	
+<label for="body">And your comment?</label>
+<textarea name="commbody" id="editor1" rows="3" cols="25"> </textarea>
+
+
+
+
+
+<input type="submit" name="sumbit" class="button" value="Add" />
+
+</form></div><div class="seven columns">';
+echo '';
+			$postid = mysql_real_escape_string($postid);
+						$commid = mysql_real_escape_string($commid);
+$commsql = "SELECT * FROM comments WHERE postid = '$id'";
+		$gc = mysql_query($commsql) or die(mysql_error());
+if(mysql_num_rows($gc) !=0):
+		while($row = mysql_fetch_assoc($gc)) {
+
+echo '<div class="comment"><i class="comment-author">' .$row['commauth'], ' wrote: </i><p class="comment-body">' .$row['commbody'], '</p>';
+
+
+}
+ 
+		else:
+			echo "<h5><strong>No comments yet.</strong></h5>";
+		endif;
+
+                      
                        
 		}
 		else:
@@ -77,25 +135,30 @@ echo $return;
 	
 }
 
-function add_content($p) {
-	$title = mysql_real_escape_string($p['title']);
-	$body = mysql_real_escape_string($p['body']);
-        $email = mysql_real_escape_string($p['email']);
-        $delcode = mysql_real_escape_string($p['delcode']);
-        $author = mysql_real_escape_string($p['author']);
 
-	if(!$title || !$body || !$author):
-echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
+function add_comment($p) {
+	$postid = mysql_real_escape_string($p['postid']);
+	        $commauth = mysql_real_escape_string($p['commauth']);
+	                $commemail = mysql_real_escape_string($p['commemail']);
+	$commbody = mysql_real_escape_string($p['commbody']);
+
+
+
+
+	if(!$postid|| !$commbody|| !$commauth || !$commemail):
+echo '<p>Something is missing.</p>' ;
 		
 	
 	else:
 	
-	$sql = "INSERT INTO cms_content VALUES (null, '$title', '$body', '$email', '$delcode', '$author')";
+	$sql = "INSERT INTO comments VALUES (null, '$postid', '$commauth', '$commemail', '$commbody')";
 	$res = mysql_query($sql) or die(mysql_error());
-	echo 'Added.';
+	echo 'Your comment has been added.';
 
 	endif;
 	
+
+echo $return;
 }
 	function manage_content($id = '') {
 	echo '<div id="manage">';
@@ -110,10 +173,11 @@ echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
 	</div>
 	<?php
 		endwhile;
-		echo '</div>'; // Zatvara div "manage"
+		echo '</div>'; // Closes the manage div
 
 	
 	}
+
 
 	function delete_content($id) {
 		if(!$id) {
@@ -127,7 +191,38 @@ echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
 }
 		
 	}
+function manage_comments($id = '') {
+	echo '<div id="manage">';
+	$sql = "SELECT * FROM comments ORDER BY commid DESC";
+	$res = mysql_query($sql) or die(mysql_error());
+	while($row = mysql_fetch_assoc($res)) :
+	?>
 
+	<div>
+	<?=$row['commbody']?> <em>by <?=$row['commauth']?></em><br>
+	<span class="actions"><a href="index.php?delete=<?=$row['commid']; ?>">Delete</a></span>
+	</div>
+	<?php
+		endwhile;
+		echo '</div>'; // Closes the manage div
+
+	
+	}
+
+
+	function delete_comment($commid) {
+		if(!$commid) {
+			return false;
+		
+		}else {
+		$commid = mysql_real_escape_string($commid);
+		$sql = "DELETE FROM comments WHERE commid = '$commid'";
+		$res = mysql_query($sql) or die(mysql_error());
+		echo 'Deleted.';
+}
+		
+	}
+	
 function update_content_form($id) {	
 	$id = mysql_real_escape_string($id);
 	$sql = "SELECT * FROM cms_content WHERE id= '$id'";
@@ -205,18 +300,20 @@ $return = '<p><a href="index.php">home</a></p>';
 ?>
 <form method="post" action="index.php">
 <input type="hidden" name="ctheme" value="true" />
-<input type="hidden" name="id" value="<?=$row['id']?>" />	
+<input type="hidden" name="id" value="2" />	
 	<div>
-<label for="inc">CSS link ref:</label>
+<label for="inc">The theme header:</label>
 <textarea name="inc" id="inc"><?=$row['inc']?></textarea>
 	</div>
 	
 	<div>
-<input type="submit" name="sumbit" value="Change" />
+<input type="submit" name="sumbit" class="button" value="Change" />
 </form>
 <?php	
 
 	}
+
+
 
 	function update_theme($p) {
 	$inc = mysql_real_escape_string($p['inc']);
@@ -228,40 +325,45 @@ echo '<p>You *really* need to enter the code. <a href="ctheme.php?id='.    $id  
 	
 	else:
 	
-	$sql = "UPDATE defaulttheme SET inc = '$inc' WHERE id = '$id'";
+	$sql = "UPDATE defaulttheme SET inc = '$inc' WHERE id = '2'";
 	$res = mysql_query($sql) or die(mysql_error());
 	echo 'Great! That worked. The default theme has been set.';
 
 	endif;
 		
 	}
-
-	function create_db($p) {
-	$sql = "CREATE TABLE IF NOT EXISTS `cms_content` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(75) NOT NULL,
-  `body` longtext CHARACTER SET utf8 COLLATE utf8_slovenian_ci NOT NULL,
-  `email` varchar(75) NOT NULL,
-  `delcode` int(15) NOT NULL,
-  `author` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
-INSERT INTO `cms_content` (`id`, `title`, `body`, `email`, `delcode`, `author`) VALUES
-(18, 'Hi there!', 'This is a pre-release version of Minima. If you find any bugs, please let us know.', 'nobody@example.com', 0, 'nobody o.O');
-CREATE TABLE IF NOT EXISTS `defaulttheme` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `inc` text CHARACTER SET utf8 NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-INSERT INTO `defaulttheme` (`id`, `inc`) VALUES
-(1, 'No theme selected!');";
+function update_sitename_form($id) {	
+	$id = mysql_real_escape_string($id);
+	$sql = "SELECT * FROM settings WHERE id = '1'";
 	$res = mysql_query($sql) or die(mysql_error());
-	echo 'Great! That actually worked!';
-
+	$row = mysql_fetch_assoc($res);
+?>
+<form method="post" action="index.php">
+<input type="hidden" name="upsitename" value="true" />
+<input type="hidden" name="id" value="1" />	
+	<div>
+<label for="value">Sitename:</label>
+<input type="text" name="value" id="value" value="<?=$row['value']?>" />
+	</div>
 	
-	
-}
+<input type="submit" name="sumbit" class="button" value="Change" />
+</form>
+<?php	
 
+	}
+
+	function update_sitename($p) {
+	$id = mysql_real_escape_string($p['id']);
+	$value = mysql_real_escape_string($p['value']);
+
+	$sql = "UPDATE settings SET name = 'sitename', value = '$value'  WHERE id = '$id'";
+	$res = mysql_query($sql) or die(mysql_error());
+	echo 'Updated.';
+
+
+		
+	}
+	
 function get_pages($id = '') {
 		if($id != ''):
 			$id = mysql_real_escape_string($id);
@@ -306,6 +408,27 @@ echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
 	else:
 	
 	$sql = "INSERT INTO pages VALUES (null, '$title', '$body', '$email', '$delcode', '$author')";
+	$res = mysql_query($sql) or die(mysql_error());
+	echo '<h1>Added.</h1>';
+
+	endif;
+	
+}
+
+function add_content($p) {
+	$title = mysql_real_escape_string($p['title']);
+	$body = mysql_real_escape_string($p['body']);
+        $email = mysql_real_escape_string($p['email']);
+        $delcode = mysql_real_escape_string($p['delcode']);
+        $author = mysql_real_escape_string($p['author']);
+
+	if(!$title || !$body || !$author):
+echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
+		
+	
+	else:
+	
+	$sql = "INSERT INTO cms_content VALUES (null, '$title', '$body', '$email', '$delcode', '$author')";
 	$res = mysql_query($sql) or die(mysql_error());
 	echo '<h1>Added.</h1>';
 
@@ -402,7 +525,7 @@ $return = '<p><a href="index.php">home</a></p>';
 
 		if(mysql_num_rows($res) !=0):
 		while($row = mysql_fetch_assoc($res)) {
-                        			echo '<h1 class="title"> <a href="../index.php?pg=' . $row['id'] , '">'  . $row['title'] .  '</a></h1>';
+                        			echo '<li><label><a href="index.php?pg=' . $row['id'] , '">'  . $row['title'] .  '</a></li></label>';
                     
                        
 		}

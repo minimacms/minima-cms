@@ -1,12 +1,12 @@
 <?php
 $obj = new modernCMS();
 
-// Sets the database connection variables
+// Postavlja vezu s databazom - varijable veze
 $obj->host = 'localhost'; //change this
-$obj->username = 'root'; //and this
-$obj->password = 'hamster'; // this, as well
-$obj->db = 'minima'; // aaaand this
+$obj->username = 'pulsir_sql1'; //and this
+$obj->password = 'amadea'; // this, as well
+$obj->db = 'pulsir_ss'; // aaaand this
 
-// connects to the database
+// Spajanje na databazu
 $obj->connect();
 ?>

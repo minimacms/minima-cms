@@ -10,7 +10,7 @@ include 'ant/addons/active.php';
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Hi there.</title>
+<title><?php $obj->get_sitename(); ?></title>
 <?php
 $obj->get_css();
 ?>
@@ -19,22 +19,45 @@ $obj->get_css();
    <body>
 
         
-                    
+                    <div class="row">
+    <div class="twelve columns">
+<div class="row">
+  <div class="twelve columns">
+    <nav class="top-bar">
+      <ul>
+        <!-- Title Area -->
+        <li class="name">
+          <h1>
+            <a href="index.php">
+              <?php $obj->get_sitename(); ?>
+            </a>
+          </h1>
+        </li>
+        <li class="toggle-topbar"><a href="index.php"></a></li>
+      </ul>
 
+      <section>
+        <!-- Right Nav Section -->
+        <ul class="right">
+          
+        <?php $obj->list_pages(); ?>
+</ul>
+         </section>
+    </nav>
+  </div>
+</div>
 
-      <div class="container">
-      <?php include 'header.php' ?>
-        
-        </div>
-                
+       
                     
-                    
+</div>
+</div>
             
 
-  
+   <div class="row">
+    <div class="twelve columns">
             
         
-        <div class="container">
+    
         
          <?php
   if(isset($_GET['id'])):
@@ -46,9 +69,19 @@ $obj->get_css();
   endif;
 ?>
 </div>
-      <div class="container">
-     <?php include 'footer.php' ?>
-    </div>
+</div>
+    
 
+
+<!--
+
+<?php
+	if($_POST['comm']):
+		$obj->add_comment($_POST);
+	
+	endif;
+?>
+
+--!>
 </body>
 </html>

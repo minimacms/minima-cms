@@ -45,26 +45,32 @@ include 'adminplugins.php';
   <div class="row">
     <div class="twelve columns">
       <h2>Admin panel</h2>
-      <p>This is version <strong><?php echo $ver; ?></strong> codenamed <?php echo $codename; ?>. <a href="<?php echo $chup; ?>">Check for updates</a></p>
+   
       <hr />
     </div>
   </div>
 
     <div class="row">
-    <div class="twelve columns">
+    <div class="four columns">
       
    
-      <dl class="tabs">
-        <dd class="active"><a href="#addcontent">Add content</a></dd>
-        <dd><a href="#simple2">Add a page</a></dd>
-<dd><a href="#simple4">Content</a></dd>
-<dd><a href="#simple5">Pages</a></dd>
-<dd><a href="#simple6">Manage pages</a></dd>
-        <dd><a href="#simple3">Change the theme</a></dd>
+      <dl class="vertical tabs">
+<dd class="active"><a href="#dashboard">Dashboard</a></dd>
+        
+<dd><a href="#simple4">Posts</a></dd>
+<dd><a href="#simple6">Pages</a></dd>
+<dd><a href="#comments">Comments</a></dd>
+        <dd><a href="#settings">Settings</a></dd>
       </dl>
+</div>
+<div class="eight columns">
 
       <ul class="tabs-content">
-        <li class="active" id="addcontentTab"><form method="post" action="index.php">
+<li class="active" id="dashboardTab"><p>This is Minima <strong><?php echo $ver; ?></strong> codenamed <?php echo $codename; ?>.<br> <a href="<?php echo $chup; ?>">Check for updates</a></p></li>
+        <li id="commentsTab"><?php $obj->manage_comments(); ?></li>
+        <li id="simple2Tab"></li>
+        <li id="simple3Tab"><?=$obj->update_theme_form($_GET['id'])?></li>
+      <li id="simple4Tab"><h3><a href="#post">Add a post</a></h3><?=$obj->manage_content()?><br><span id="post"></span><form method="post" action="index.php">
 <input type="hidden" name="add" value="true" />
 	<div id="page-wrap">
 <label for="title">Title:</label>
@@ -89,7 +95,26 @@ include 'adminplugins.php';
 <input type="submit" name="sumbit" class="button" value="Publish" />
 
 </form></li>
-        <li id="simple2Tab"><form method="post" action="index.php">
+<li id="settingsTab">
+<ul class="accordion">
+  <li class="active">
+    <div class="title">
+      <h5>Sitename</h5>
+    </div>
+    <div class="content">
+      <p><?php $obj->update_sitename_form(); ?></p>
+    </div>
+  </li>
+</li>
+<li>
+<div class="title">
+<h5>Theme</h5>
+</div>
+<div class="content">
+<p><?php $obj->update_theme_form(); ?></p>
+</div>
+</ul>
+<li id="simple6Tab"><h3><a href="#papigalol">Add a page</a></h3><?=$obj->manage_pages()?><br><span id="papigalol"></span><form method="post" action="index.php">
 <input type="hidden" name="addpage" value="true" />
   <div id="page-wrap">
 <label for="title">Title:</label>
@@ -113,10 +138,7 @@ include 'adminplugins.php';
 <input type="submit" class="button" name="sumbit" value="Publish" />
 
 </form></li>
-        <li id="simple3Tab"><?=$obj->update_theme_form($_GET['id'])?></li>
-      <li id="simple4Tab"><?=$obj->manage_content()?></li>
-<li id="simple5Tab"><?=$obj->list_pages()?></li>
-<li id="simple6Tab"><?=$obj->manage_pages()?></li>
+
       </ul>
       
       
@@ -181,6 +203,11 @@ include 'adminplugins.php';
     $obj->add_pages($_POST);
   elseif($_POST['updatepage']):
     $obj->update_pages($_POST);
+elseif($_POST['upsitename']):
+    $obj->update_sitename($_POST);
+elseif($_GET['delete']):
+		$obj->delete_comment($_GET['delete']);
+	
 	endif;
 ?>
 
