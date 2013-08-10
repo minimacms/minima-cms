@@ -1,8 +1,5 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-CREATE DATABASE IF NOT EXISTS `minima` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `minima`;
-
 CREATE TABLE IF NOT EXISTS `cms_content` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(75) NOT NULL,
@@ -51,4 +48,3 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 INSERT INTO `settings` (`id`, `name`, `value`) VALUES
 (1, 'sitename', 'A fresh Minima');
-
