@@ -6,8 +6,9 @@ include '../_class/db-conf.php';
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UFT-8" />
-<title>Minima 1.1</title>
+<title>Update page -- Minima</title>
 <link rel="stylesheet" href="../style.css" type="text/css">
+<script src="../inc/ckeditor/ckeditor.js"></script>
 </head>
 
 <body>
@@ -20,5 +21,6 @@ include '../_class/db-conf.php';
 <?php
 include 'adminplugins.php';
 ?>
+<a href="index.php">back to admin panel</a>
 </body>
 <html>

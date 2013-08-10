@@ -99,7 +99,8 @@ echo '<p>' . $row['body'] , '</p> ';
 
 	
 <label for="body">And your comment?</label>
-<textarea name="commbody" id="editor1" rows="3" cols="25"> </textarea>
+<script src="inc/ckeditor/ckeditor.js"></script>
+<textarea name="commbody" id="editor1" class="ckeditor" rows="3" cols="25"> </textarea>
 
 
 
@@ -239,7 +240,8 @@ function update_content_form($id) {
 	
 	<div>
 <label for="body">Text:</label>
-<textarea name="body" id="body" rows="8" cols="48" ><?=$row['body']?> </textarea>
+<script src="inc/ckeditor/ckeditor.js"></script>
+<textarea name="body" id="body" rows="8" cols="48" class="ckeditor" ><?=$row['body']?> </textarea>
 	</div>
 <input type="submit" name="sumbit" value="Update" />
 </form>
@@ -265,73 +267,8 @@ echo '<p>Something is missing, or you are trying to edit a post that does not ex
 	endif;
 		
 	}
-	function get_css($id = '') {
-		if($id != ''):
-			$id = mysql_real_escape_string($id);
-			$sql = "SELECT * FROM defaulttheme WHERE id = '$id'";
-
-$return = '<p><a href="index.php">home</a></p>';
-
-		else:
-			$sql = "SELECT * FROM defaulttheme ORDER BY id DESC";
-		endif;
-
-
-
-		$res = mysql_query($sql) or die(mysql_error());
-
-		if(mysql_num_rows($res) !=0):
-		while($row = mysql_fetch_assoc($res)) {
-                        			echo $row['inc'];
-                       
-                       
-		}
-		else:
-			echo "<h1> Sorry, Minima can't load this page.</h1> No default theme was found. Sorry for that.</p>";
-		endif;
-
 	
-}
-	function update_theme_form($id) {	
-	$id = mysql_real_escape_string($id);
-	$sql = "SELECT * FROM defaulttheme WHERE id= '$id'";
-	$res = mysql_query($sql) or die(mysql_error());
-	$row = mysql_fetch_assoc($res);
-?>
-<form method="post" action="index.php">
-<input type="hidden" name="ctheme" value="true" />
-<input type="hidden" name="id" value="2" />	
-	<div>
-<label for="inc">The theme header:</label>
-<textarea name="inc" id="inc"><?=$row['inc']?></textarea>
-	</div>
-	
-	<div>
-<input type="submit" name="sumbit" class="button" value="Change" />
-</form>
-<?php	
 
-	}
-
-
-
-	function update_theme($p) {
-	$inc = mysql_real_escape_string($p['inc']);
-	$id = mysql_real_escape_string($p['id']);
-
-	if(!$inc):
-echo '<p>You *really* need to enter the code. <a href="ctheme.php?id='.    $id    .'"> But ok, take another try. </a> </p>' ;
-		
-	
-	else:
-	
-	$sql = "UPDATE defaulttheme SET inc = '$inc' WHERE id = '2'";
-	$res = mysql_query($sql) or die(mysql_error());
-	echo 'Great! That worked. The default theme has been set.';
-
-	endif;
-		
-	}
 function update_sitename_form($id) {	
 	$id = mysql_real_escape_string($id);
 	$sql = "SELECT * FROM settings WHERE id = '1'";
@@ -381,6 +318,13 @@ $return = '<p><a href="index.php">home</a></p>';
 
 		if(mysql_num_rows($res) !=0):
 		while($row = mysql_fetch_assoc($res)) {
+                        			if($row['redirect'] != ''){
+                        			echo '<script type="text/javascript">
+						<!--
+						window.location = "'.$row['redirect'].'"
+						//-->
+						</script>';
+						}
                         			echo '<h1 class="title"> <a href="index.php?pg=' . $row['id'] , '">'  . $row['title'] .  '</a></h1>';
                         echo '<p class="meta"><span class="posted">Published by: ' .$row['author'] . '</span></p>';
 echo '<p>' . $row['body'] , '</p> ';
@@ -400,6 +344,7 @@ function add_pages($p) {
         $email = mysql_real_escape_string($p['email']);
         $delcode = mysql_real_escape_string($p['delcode']);
         $author = mysql_real_escape_string($p['author']);
+        $redirect = mysql_real_escape_string($p['redirect']);
 
 	if(!$title || !$body || !$author):
 echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
@@ -407,7 +352,7 @@ echo '<p>Something is missing. <a href="index.php"> Try again. </a> </p>' ;
 	
 	else:
 	
-	$sql = "INSERT INTO pages VALUES (null, '$title', '$body', '$email', '$delcode', '$author')";
+	$sql = "INSERT INTO pages VALUES (null, '$title', '$body', '$email', '$delcode', '$author', '$redirect')";
 	$res = mysql_query($sql) or die(mysql_error());
 	echo '<h1>Added.</h1>';
 
@@ -484,6 +429,10 @@ function update_pages_form($id) {
 <label for="body">Text:</label>
 <textarea name="body" id="body" rows="8" cols="48" ><?=$row['body']?> </textarea>
 	</div>
+	<div>
+<label for="redirect">Redirect:</label>
+<input type="text" name="redirect" id="redirect" value="<?=$row['redirect']?>" />
+</div>
 <input type="submit" name="sumbit" value="Update" />
 </form>
 <?php	
@@ -494,14 +443,15 @@ function update_pages_form($id) {
 	$title = mysql_real_escape_string($p['title']);
 	$body = mysql_real_escape_string($p['body']);
 	$id = mysql_real_escape_string($p['id']);
+	$redirect = mysql_real_escape_string($p['redirect']);
 
 	if(!$title || !$body):
-echo '<p>Something is missing, or you are trying to edit a post that does not exist. <a href="update-pages.php?id='.    $id    .'"> Either way, try  again. </a> </p>' ;
+echo '<p>Something is missing, or you are trying to edit a page that does not exist. <a href="update-pages.php?id='.    $id    .'"> Either way, try  again. </a> </p>' ;
 		
 	
 	else:
 	
-	$sql = "UPDATE pages SET title = '$title', body= '$body'  WHERE id = '$id'";
+	$sql = "UPDATE pages SET title = '$title', body = '$body', redirect = '$redirect'  WHERE id = '$id'";
 	$res = mysql_query($sql) or die(mysql_error());
 	echo 'Updated.';
 

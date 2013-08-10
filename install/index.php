@@ -1,4 +1,5 @@
 <?php 
+error_reporting(0);
 if($_POST['codegenerate']):
 $mysql_user = $_POST['mysql_user'];
 $mysql_pass = $_POST['mysql_pass'];
@@ -53,8 +54,8 @@ color: #fff;
 	text-shadow: -1px 1px 8px #ffc, 1px -1px 8px #fff;
 }
 
-.error, .button{
-font-family: 'Raleway', sans-serif;
+.error, .button, .thelogo{
+font-family: 'Arial', 'Helvetica Neue', sans-serif;
 font-weight: 100;
 
 }
@@ -77,7 +78,7 @@ border: 1p solid #999;
 </head>
 <body>
 <div class="thelogo">
-<img src="../_class/mlogo.png" _title="Minima" alt="minima" />
+<img src="http://minimacms.github.io/logo.png">
 </div>
 <div class="error">
 Hi, I'm here to help you with setting up Minima. You'll have to do some things yourself, but it won't be that hard. To start, enter your MySQL connection parameters.<br><br>
@@ -103,6 +104,7 @@ echo "<p>Here's the code. <strong>Paste this in _class/db-conf.php overwriting t
  <br>
 // connects to the database<br>
 &#36;obj->connect();<br>
+error_reporting(0); // reporting errors is turned off. minima may produce errors, but we don't want to create huge error log files. if you're not fine with this, you can disable the option and try to fix the bugs causing minima to misbehave. <br>
 ?></code>";
 echo '<h3>Step 2 - Import the database layout</h3><br><p>Great. Now you\'ll need to import <a href="mysql-data.sql">this SQL file</a> into your database or run an SQL query on it with the query being the file content. To do this, Minima recommends PHPMyAdmin. (I can\'t help you with that, sorry) <br><br><form name="done" method="post" value="index.php">
 <input type="hidden" name="done" value="true" />When you\'re done,  <button type="sumbit" name="sumbit"  class="button" />let me know.</button></form>';

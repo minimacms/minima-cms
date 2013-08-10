@@ -25,6 +25,6 @@ include 'adminplugins.php';
 
 <?=$obj->manage_content()?>
 
-
+<a href="index.php">back to admin panel</a>
 </body>
 <html>

@@ -24,7 +24,7 @@ include 'adminplugins.php';
 ?>
 
 <?=$obj->manage_pages()?>
-
+<a href="index.php">back to admin panel</a>
 
 </body>
 <html>
